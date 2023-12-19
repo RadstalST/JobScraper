@@ -19,8 +19,14 @@ def handle_field(label, field_group,answer_path = "out/answers.json",quick_apply
                 optionlen = len(answers[answers["field_name"] == label]["options"][0])
             except:
                 optionlen = 0
+
+
+            try:
+                answer = answers[answers["field_name"]==label]["value"].values[0]
+            except:
+                answer = None
             return  {
-                "answer": answers[answers["field_name"]==label]["value"].values[0],
+                "answer": answer,
                 "type": "input" if optionlen == 0 else "select"
             }
         except:
@@ -28,9 +34,13 @@ def handle_field(label, field_group,answer_path = "out/answers.json",quick_apply
 
                 
 
-    answer = get_answer(label)
+    answer = None
+    try:
+        answer = get_answer(label)
+    except:
+        pass
 
-    if answer and  quick_apply:
+    if answer:
         match answer["type"]:
             case "select":
                 elem = field_group.find_element(By.CSS_SELECTOR, "select")
@@ -87,6 +97,8 @@ def fillin_modal(modal,driver,quick_apply=False):
     logging.info("fillin_modal")
     try:
         fields = []
+        next_button = WebDriverWait(modal, 1).until(EC.presence_of_element_located((By.CSS_SELECTOR, "button[aria-label='Continue to next step']")))
+        next_button.click()
         while True:
 
             # wait for modal to load

@@ -1,4 +1,4 @@
-from src import App
+from src.app import App 
 import argparse 
 
 parser = argparse.ArgumentParser()
